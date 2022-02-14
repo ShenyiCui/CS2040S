@@ -1,3 +1,5 @@
+import com.sun.source.tree.Tree;
+
 /**
  * ScapeGoat Tree class
  *
@@ -33,7 +35,17 @@ public class SGTree {
 
     // Root of the binary tree
     public TreeNode root = null;
+    /**
+     * Helper for countNodes
+     */
+    public int getLength(TreeNode node) {
+        if (node == null)
+            return 0;
 
+        int leftLength = getLength(node.left);
+        int rightLength = getLength(node.right);
+        return 1 + leftLength + rightLength;
+    }
     /**
      * Counts the number of nodes in the specified subtree
      *
@@ -42,10 +54,26 @@ public class SGTree {
      * @return number of nodes
      */
     public int countNodes(TreeNode node, Child child) {
-        // TODO: Implement this
+        if (child == Child.RIGHT)
+            return getLength(node.right);
+        if (child == Child.LEFT)
+            return getLength(node.left);
         return 0;
     }
 
+    /**
+     * Helper for enumerateNode
+     */
+    public int inOrderTraverse(TreeNode[] nodeArray, TreeNode node, int pointer) {
+        if (node == null)
+            return pointer;
+
+        pointer = inOrderTraverse(nodeArray, node.left, pointer);
+        nodeArray[pointer++] = node;
+        pointer = inOrderTraverse(nodeArray, node.right, pointer);
+
+        return pointer;
+    }
     /**
      * Builds an array of nodes in the specified subtree
      *
@@ -54,10 +82,31 @@ public class SGTree {
      * @return array of nodes
      */
     public TreeNode[] enumerateNodes(TreeNode node, Child child) {
-        // TODO: Implement this
-        return new TreeNode[0];
+        int treeLength = countNodes(node, child);
+        TreeNode[] nodeArray = new TreeNode[treeLength];
+
+        if (child == Child.LEFT)
+            inOrderTraverse(nodeArray, node.left, 0);
+        if (child == Child.RIGHT)
+            inOrderTraverse(nodeArray, node.right, 0);
+
+        return nodeArray;
     }
 
+    /**
+     * Helper for buildTree
+     */
+    public TreeNode buildTreeHelper(TreeNode[] nodeList, int low, int high) {
+        int mid = low + (high - low)/2;
+        if (low > high)
+            return null;
+
+        TreeNode node = nodeList[mid];
+        node.left = buildTreeHelper(nodeList, low, mid - 1);
+        node.right = buildTreeHelper(nodeList, mid + 1, high);
+
+        return node;
+    }
     /**
      * Builds a tree from the list of nodes
      * Returns the node that is the new root of the subtree
@@ -66,9 +115,12 @@ public class SGTree {
      * @return the new root node
      */
     public TreeNode buildTree(TreeNode[] nodeList) {
-        // TODO: Implement this
-        return new TreeNode(0);
+        int low = 0;
+        int high = nodeList.length - 1;
+        TreeNode newTreeNodes = buildTreeHelper(nodeList, low, high);
+        return newTreeNodes;
     }
+
 
     /**
     * Rebuilds the specified subtree of a node
@@ -84,6 +136,7 @@ public class SGTree {
         // Then, build a new subtree from that list
         TreeNode newChild = buildTree(nodeList);
         // Finally, replace the specified child with the new subtree
+        //System.out.println(newChild.key);
         if (child == Child.LEFT) {
             node.left = newChild;
         } else if (child == Child.RIGHT) {
@@ -125,7 +178,7 @@ public class SGTree {
     // Simple main function for debugging purposes
     public static void main(String[] args) {
         SGTree tree = new SGTree();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             tree.insert(i);
         }
         tree.rebuild(tree.root, Child.RIGHT);

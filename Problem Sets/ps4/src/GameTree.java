@@ -120,6 +120,25 @@ public class GameTree {
         return node;
     }
 
+    public int sumChildren(TreeNode node, Player currentPlayer) {
+        if (node == null)
+            return Integer.MIN_VALUE;
+        if (node.leaf)
+            return node.value;
+
+        int value = currentPlayer == Player.ONE ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        for(TreeNode child: node.children) {
+            if(currentPlayer == Player.ONE)
+                value = Math.max(value, sumChildren(child, Player.TWO));
+
+            if(currentPlayer == Player.TWO)
+                value = Math.min(value, sumChildren(child, Player.ONE));
+        }
+
+        node.value = value;
+        return value;
+    }
+
     /**
      * findValue determines the value for every node in the game tree and sets the value field of each node. If the root
      * is null (i.e., no tree exists), then it returns Integer.MIN_VALUE.
@@ -127,10 +146,8 @@ public class GameTree {
      * @return value of the root node of the game tree
      */
     int findValue() {
-        // TODO: Implement this
-        return 0;
+        return sumChildren(this.root, Player.ONE);
     }
-
 
     // Simple main for testing purposes
     public static void main(String[] args) {
