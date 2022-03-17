@@ -1,6 +1,5 @@
 import java.util.Random;
 import java.util.HashMap;
-import java.util.ArrayList;
 
 /**
  * This is the main class for your Markov Model.
@@ -16,73 +15,8 @@ public class MarkovModel {
 	private Random generator = new Random();
 	private HashMap<String, MarkovNodePair<MarkovCharMap>> kgramMap = new HashMap<>();
 	private int order;
-
 	// This is a special symbol to indicate no character
 	public static final char NOCHARACTER = (char) 0;
-
-	private class SortedCharArray extends ArrayList<Character> {
-		/**
-		 * Inserts character in a sorted fashion into the arrayList
-		 *
-		 * @param c  the character to insert into the arrayList
-		 */
-		@Override
-		public boolean add(Character c) {
-			int index = 0;
-			while (index < this.size() && c > this.get(index))
-				index++;
-			this.add(index, c);
-			return true;
-		}
-	}
-
-	private class MarkovNodePair<T> {
-		private int frequency = 1;
-		private T value;
-
-		private MarkovNodePair(T value) {
-			this.value = value;
-		}
-
-		private void addFrequency() {
-			this.frequency++;
-		}
-	}
-
-	private class MarkovCharMap {
-		private HashMap<Character, MarkovNodePair<Character>>  charMap = new HashMap<>();
-		private SortedCharArray allKeys = new SortedCharArray();
-
-		private void put(Character key) {
-			boolean isExist = this.charMap.get(key) != null;
-			allKeys.add(key);
-
-			if (!isExist) {
-				MarkovNodePair newNode = new MarkovNodePair<>(key);
-				this.charMap.put(key, newNode);
-				return;
-			}
-
-			this.charMap.get(key).addFrequency();
-		}
-
-		private int getKeyFrequency(Character key) {
-			MarkovNodePair<Character> markovNodePair = this.charMap.get(key);
-			if (markovNodePair == null) {
-				return 0;
-			}
-			return markovNodePair.frequency;
-		}
-
-		private Character pickRandomChar() {
-			int max = allKeys.size();
-			if (max == 0)
-				return NOCHARACTER;
-
-			int randomPick = generator.nextInt(max);
-			return allKeys.get(randomPick);
-		}
-	}
 
 	/**
 	 * Constructor for MarkovModel class.
@@ -150,6 +84,6 @@ public class MarkovModel {
 			return NOCHARACTER;
 		}
 		// System.out.println(markovNodePair.value.allKeys.toString());
-		return markovNodePair.value.pickRandomChar();
+		return markovNodePair.value.pickRandomChar(generator);
 	}
 }
