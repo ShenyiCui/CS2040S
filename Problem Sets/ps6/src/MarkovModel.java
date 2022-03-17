@@ -20,7 +20,7 @@ public class MarkovModel {
 	// This is a special symbol to indicate no character
 	public static final char NOCHARACTER = (char) 0;
 
-	private class CharArray extends ArrayList<Character> {
+	private class SortedCharArray extends ArrayList<Character> {
 		/**
 		 * Inserts character in a sorted fashion into the arrayList
 		 *
@@ -51,7 +51,7 @@ public class MarkovModel {
 
 	private class MarkovCharMap {
 		private HashMap<Character, MarkovNodePair<Character>>  charMap = new HashMap<>();
-		private CharArray allKeys = new CharArray();
+		private SortedCharArray allKeys = new SortedCharArray();
 
 		private void put(Character key) {
 			boolean isExist = this.charMap.get(key) != null;
