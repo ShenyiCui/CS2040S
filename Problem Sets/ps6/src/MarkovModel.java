@@ -78,8 +78,6 @@ public class MarkovModel {
 			int max = allKeys.size();
 			if (max == 0)
 				return NOCHARACTER;
-			if (max == 1)
-				return allKeys.get(0);
 
 			int randomPick = generator.nextInt(max);
 			return allKeys.get(randomPick);
@@ -151,7 +149,7 @@ public class MarkovModel {
 		if (markovNodePair == null) {
 			return NOCHARACTER;
 		}
-		System.out.println(markovNodePair.value.allKeys.toString());
+		// System.out.println(markovNodePair.value.allKeys.toString());
 		return markovNodePair.value.pickRandomChar();
 	}
 }

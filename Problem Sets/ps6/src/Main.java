@@ -6,13 +6,14 @@ public class Main {
         String kgram = "aba";
         // System.out.println(newModel.nextCharacter(kgram));
         String fullString = kgram;
-        for(int i = 0; i < 15; i++) {
+        for(int i = 0; i < 12; i++) {
             // System.out.println(newModel.nextCharacter(kgram));
-            if (newModel.nextCharacter(kgram) == NOCHARACTER)
+            Character nextChar = newModel.nextCharacter(kgram);
+            if (nextChar == NOCHARACTER)
                 break;
 
-            fullString += newModel.nextCharacter(kgram);
-            kgram = kgram.substring(1) + newModel.nextCharacter(kgram);
+            fullString += nextChar;
+            kgram = kgram.substring(1) + nextChar;
         }
         System.out.println(fullString);
     }
