@@ -5,7 +5,6 @@ public class Room {
 	private boolean westWall, eastWall, northWall, southWall;
 	public boolean onPath;
 	public boolean isVisited = false;
-	public boolean isAddedToFrontier = false;
 	public boolean isDestination = false;
 	public int currentCount;
 	public int row;

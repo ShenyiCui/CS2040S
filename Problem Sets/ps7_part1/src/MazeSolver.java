@@ -46,7 +46,6 @@ public class MazeSolver implements IMazeSolver {
 				currentRoom.isVisited = false;
 				currentRoom.onPath = false;
 				currentRoom.parentRoom = null;
-				currentRoom.isAddedToFrontier = false;
 			}
 		}
 		this.nextFrontier = new LinkedList<>();
@@ -98,7 +97,7 @@ public class MazeSolver implements IMazeSolver {
 
 	public Integer solve(Integer roomCount) {
 		// System.out.println("\nCurrent Frontier: " + nextFrontier.toString());
-		Room nextRoom = nextFrontier.peek();
+		Room nextRoom = nextFrontier.poll();
 		if (nextRoom == null) return this.solvedValue;
 		return traverse(nextRoom, nextRoom.currentCount);
 	}
@@ -111,15 +110,14 @@ public class MazeSolver implements IMazeSolver {
 			int nextCol = currentRoom.col + DELTAS[direction][1];
 			Room nextRoom = this.maze.getRoom(nextRow, nextCol);
 
-			if (nextRoom.isVisited || nextRoom.isAddedToFrontier) continue;
+			if (nextRoom.isVisited) continue;
 			// System.out.println(currentRoom.row + ", " + currentRoom.col
-			// 	 	+ "|| next: " + nextRow + ", " + nextCol + " || count: " + (currentRoom.currentCount + 1));
+			// 		+ "|| next: " + nextRow + ", " + nextCol + " || count: " + (currentRoom.currentCount + 1));
 
 			nextRoom.row = nextRow;
 			nextRoom.col = nextCol;
 			nextRoom.currentCount = currentRoom.currentCount + 1;
 			nextRoom.parentRoom = currentRoom;
-			nextRoom.isAddedToFrontier = true;
 			nextFrontier.add(nextRoom);
 
 			// System.out.println(nextRoom.currentCount + " > " + (this.numReachableArr.size() - 1));
@@ -139,11 +137,13 @@ public class MazeSolver implements IMazeSolver {
 			// System.out.println("---Reached Destination---");
 			markPath(currentRoom);
 			this.solvedValue = roomCount;
-			currentRoom.isVisited = true;
-			return roomCount;
 		}
-		nextFrontier.poll();
-		if (currentRoom.isVisited) return solve(roomCount);
+
+		if (currentRoom.isVisited) {
+			int currVal = this.numReachableArr.get(currentRoom.currentCount);
+			this.numReachableArr.set(currentRoom.currentCount, currVal - 1);
+			return solve(roomCount);
+		}
 
 		// System.out.println(currentRoom + " Current Count: " + roomCount);
 		getNextFrontier(currentRoom);
@@ -161,13 +161,6 @@ public class MazeSolver implements IMazeSolver {
 			throw new IllegalArgumentException("Invalid k value");
 		}
 
-		// System.out.println("Calling Loop: " + numReachableArr);
-		while (true) {
-			Room nextRoom = nextFrontier.peek();
-			if (nextRoom == null || nextRoom.currentCount >= k)
-				break;
-			getNextFrontier(nextFrontier.poll());
-		}
 		if (k >= this.numReachableArr.size()) return 0;
 		return this.numReachableArr.get(k);
 	}
@@ -177,19 +170,18 @@ public class MazeSolver implements IMazeSolver {
 			Maze maze = Maze.readMaze("maze-empty.txt");
 			IMazeSolver solver = new MazeSolver();
 			solver.initialize(maze);
-
-//			System.out.println(solver.pathSearch(1, 1, 1, 1)); // --> 8
-//			MazePrinter.printMaze(maze);
+			System.out.println(solver.pathSearch(1, 1, 0, 1)); // --> 8
+			MazePrinter.printMaze(maze);
 //			System.out.println(solver.pathSearch(0, 0, 2, 3)); // --> 7
 //			ImprovedMazePrinter.printMaze(maze);
-//			System.out.println(solver.pathSearch(1, 1, 3, 0)); // --> 8
+//			System.out.println(solver.pathSearch(1, 1, 4, 0)); // --> 8
 //			ImprovedMazePrinter.printMaze(maze);
 //			System.out.println(solver.pathSearch(1, 1, 2, 3)); // --> 7
 //			ImprovedMazePrinter.printMaze(maze);
-//			System.out.println(solver.pathSearch(1, 1, 3, 1)); // --> 7
+//			System.out.println(solver.pathSearch(1, 1, 4, 1)); // --> 7
 //			ImprovedMazePrinter.printMaze(maze);
-			System.out.println(solver.pathSearch(0, 0, 1, 1)); // --> 4
-			ImprovedMazePrinter.printMaze(maze);
+//			System.out.println(solver.pathSearch(0, 0, 2, 2)); // --> 4
+//			ImprovedMazePrinter.printMaze(maze);
 
 			for (int i = 0; i <= 9; ++i) {
 				// System.out.println("");
