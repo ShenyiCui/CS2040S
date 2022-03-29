@@ -170,6 +170,7 @@ public class MazeSolver implements IMazeSolver {
 			Maze maze = Maze.readMaze("maze-empty.txt");
 			IMazeSolver solver = new MazeSolver();
 			solver.initialize(maze);
+			System.out.println(solver.numReachable(0));
 			System.out.println(solver.pathSearch(1, 1, 0, 1)); // --> 8
 			MazePrinter.printMaze(maze);
 //			System.out.println(solver.pathSearch(0, 0, 2, 3)); // --> 7
