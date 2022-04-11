@@ -4,10 +4,10 @@ import java.util.function.Function;
 import java.util.TreeSet;
 import java.util.HashMap;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+// import java.io.BufferedWriter;
+// import java.io.FileWriter;
+// import java.io.IOException;
+// import java.io.PrintWriter;
 
 public class MazeSolver implements IMazeSolver {
 	private static final int TRUE_WALL = Integer.MAX_VALUE;
@@ -110,6 +110,7 @@ public class MazeSolver implements IMazeSolver {
 	}
 
 	private class PriorityQ extends TreeSet<Node> {
+		// O(Log(N))
 		public void decreaseKey(Node n, Integer newDistance) {
 			this.remove(n);
 			n.distance = newDistance;
@@ -169,7 +170,9 @@ public class MazeSolver implements IMazeSolver {
 		endNode.setAsDestination();
 		roomNodeMap.put(endRoom, endNode);
 
+		// O(E*Log(N))
 		while (!this.pq.isEmpty() && !this.destinationFound) {
+			// O(N.Edges * Log(N))
 			pq.pollFirst().relaxAllNeighbours();
 		}
 		return this.fearLevel;
@@ -188,9 +191,9 @@ public class MazeSolver implements IMazeSolver {
 	}
 
 	public static void main(String[] args) {
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-		PrintWriter pw = null;
+//		FileWriter fw = null;
+//		BufferedWriter bw = null;
+//		PrintWriter pw = null;
 		try {
 			Maze maze = Maze.readMaze("haunted-maze-sample.txt");
 			IMazeSolver solver = new MazeSolver();
